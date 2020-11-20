@@ -4,19 +4,26 @@ from tkinter import messagebox
 from tkinter import ttk
 import matplotlib.pyplot as plt
 
+def conectarBd():
+    global conexao
+    try:
+        conexao = pymysql.connect(
+                host='127.0.0.1',
+                user='root', #felipeolv
+                password='', #5924259242
+                db='clinica_gestao',
+                charset='utf8mb4',
+                cursorclass=pymysql.cursors.DictCursor
+            )
+    except:
+        messagebox.showinfo("Erro","Erro ao conectar ao banco de dados.")
+        
 
 class JanelaAtendente():
 
     def cadastrarCliente(self):
         try:
-            conexao = pymysql.connect(
-                host='db4free.net',
-                user='felipeolv',
-                password='5924259242',
-                db='clinica_exames',
-                charset='utf8mb4',
-                cursorclass=pymysql.cursors.DictCursor
-            )
+            conectarBd()
         except:
             messagebox.showinfo("Erro", "Erro ao conectar ao banco de dados")
 
@@ -139,14 +146,8 @@ class JanelaLogin():
        atendente = False
 
        try:
-           conexao = pymysql.connect(
-               host='db4free.net',
-               user='felipeolv',
-               password='5924259242',
-               db='clinica_exames',
-               charset='utf8mb4',
-               cursorclass = pymysql.cursors.DictCursor
-           )
+           conectarBd()
+           messagebox.showinfo("Sucesso","Conectado com sucesso!")
        except:
            messagebox.showinfo("Erro","Erro ao conectar ao banco de dados")
 
@@ -217,14 +218,7 @@ class JanelaCadastro():
         tel1 = self.tel.get()
 
         try:
-            conexao = pymysql.connect(
-                host='db4free.net',
-                user='felipeolv',
-                password='5924259242',
-                db='clinica_exames',
-                charset='utf8mb4',
-                cursorclass=pymysql.cursors.DictCursor
-            )
+            conectarBd()
         except:
             messagebox.showinfo("Erro", "Erro ao conectar ao banco de dados")
 
@@ -285,14 +279,7 @@ class Relatorio():
     def gerarPagamentos(self):
 
         try:
-            conexao = pymysql.connect(
-                host='db4free.net',
-                user='felipeolv',
-                password='5924259242',
-                db='clinica_exames',
-                charset='utf8mb4',
-                cursorclass=pymysql.cursors.DictCursor
-            )
+            conectarBd()
         except:
             messagebox.showinfo("Erro", "Erro ao conectar ao banco de dados")
 
@@ -325,14 +312,7 @@ class Relatorio():
 
     def gerarExames(self):
         try:
-            conexao = pymysql.connect(
-                host='db4free.net',
-                user='felipeolv',
-                password='5924259242',
-                db='clinica_exames',
-                charset='utf8mb4',
-                cursorclass=pymysql.cursors.DictCursor
-            )
+            conectarBd()
         except:
             messagebox.showinfo("Erro", "Erro ao conectar ao banco de dados")
 
@@ -398,14 +378,7 @@ class CadastroVendedor():
         tel1 = self.tel.get()
 
         try:
-            conexao = pymysql.connect(
-                host='db4free.net',
-                user='felipeolv',
-                password='5924259242',
-                db='clinica_exames',
-                charset='utf8mb4',
-                cursorclass=pymysql.cursors.DictCursor
-            )
+            conectarBd()
         except:
             messagebox.showinfo("Erro", "Erro ao conectar ao banco de dados")
 
@@ -461,14 +434,7 @@ class CadastroMedicos():
         dispo1 = self.disp.get()
 
         try:
-            conexao = pymysql.connect(
-                host='db4free.net',
-                user='felipeolv',
-                password='5924259242',
-                db='clinica_exames',
-                charset='utf8mb4',
-                cursorclass=pymysql.cursors.DictCursor
-            )
+            conectarBd()
         except:
             messagebox.showinfo("Erro", "Erro ao conectar ao banco de dados")
 
@@ -523,4 +489,4 @@ class CadastroMedicos():
         self.root.mainloop()
 
 
-JanelaLogin()
+Relatorio()
