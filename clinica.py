@@ -318,7 +318,7 @@ class Relatorio():
 
         try:
             with conexao.cursor() as cursor:
-                self.linhas = cursor.execute("SELECT exame FROM cliente")
+                self.linhas = cursor.execute("SELECT exames FROM cliente")
         except:
             messagebox.showinfo("Erro", "Erro ao extrair dados do banco de dados.")
 
@@ -332,28 +332,32 @@ class Relatorio():
             if self.total == None:
                 break
 
-            self.lista = list(self.total)
-
-            if 1 in self.lista:
+            if self.total['exames'] == 1:
                 self.coago += 1
-            elif 2 in self.lista:
+            elif self.total['exames'] == 2:
                 self.hdl += 1
-            elif 3 in self.lista:
+            elif self.total['exames'] == 3:
                 self.ldl += 1
-            elif 4 in self.lista:
-                self.coltotal
+            elif self.total['exames'] == 4:
+                self.coltotal +=1                
 
 
-        fig, (ax1, ax2) = plt.subplots(2)
-        fig.suptitle('Relação entre os exames feitos')
-        ax1.plot(self.coago, self.hdl)
-        ax1.set_xlabel("Coagulograma")
-        ax1.set_ylabel("Colesterol HDL")
-        ax2.plot(self.ldl, self.coltotal)
-        ax2.set_xlabel("Colesterol LDL")
-        ax2.set_ylabel("Colesterol Total")
-        #figManager = plt.get_current_fig_manager()
-        #figManager.window.showMaximized()
+
+        labels = ['Coagulograma', 'Colesterol HDL', 'Colesterol LDL', 'Colesterol Total']
+        sizes = [self.coago,self.hdl,self.ldl,self.coltotal]
+        
+        #explosão
+        explode = (0.1, 0, 0, 0)
+        total = sum(sizes)
+        
+        #cores
+        cores = ['lightblue', 'green', 'pink', 'red']
+        
+        #aplicando explosion e cores
+        plt.pie(sizes, explode=explode, labels=labels, colors=cores, autopct=lambda p: '{:.0f}'.format(p * total / 100), shadow=True, startangle=90) 
+        plt.axis('equal')
+        
+        #mostrando grafico
         plt.show()
 
 
