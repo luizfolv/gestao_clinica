@@ -310,7 +310,6 @@ class Relatorio():
         plt.bar(grupos,valores)
         plt.show()
 
-
     def gerarExames(self):
         try:
             conectarBd()
@@ -360,7 +359,41 @@ class Relatorio():
         
         #mostrando grafico
         plt.show()
-
+        
+    def gerarAssociacoes(self):
+        try:
+            conectarBd()
+        except:
+            messagebox.showinfo("Erro","Tente novamente.")
+        
+        try:
+            with conexao.cursor() as cursor:
+                self.associacoes = cursor.execute("SELECT sexo FROM cliente")
+        except:
+            messagebox.showinfo("Erro","Erro ao capturar os dados.")
+        
+        self.Homem = 0
+        self.Mulher = 0
+        self.total = 0
+        
+        while True:
+            self.sex = cursor.fetchone()
+            if self.sex == None:
+                break
+            
+            if self.sex['sexo'] == 'Feminino':
+                self.Mulher += 1
+                self.total +=1
+            elif self.sex['sexo'] == 'Masculino':
+                self.Homem += 1
+                self.total +=1
+                
+        grupos = ['Homem','Mulher','Total']
+        valores = [self.Homem,self.Mulher,self.total]
+        plt.bar(grupos,valores)
+        plt.title("Associação por sexo")
+        plt.show()        
+        
 
     def __init__(self):
         self.root = Tk()
@@ -368,7 +401,7 @@ class Relatorio():
         #self.root.geometry("800x600")
         Button(self.root, text="Pagamentos",width=20,command=self.gerarPagamentos).grid(row=0,column=0, padx=5,pady=5)
         Button(self.root, text="Exames", width=20, command=self.gerarExames).grid(row=1,column=0, padx=5, pady=5)
-        Button(self.root, text="Associação", width=20).grid(row=0, column=1, padx=5, pady=5)
+        Button(self.root, text="Associação", width=20, command=self.gerarAssociacoes).grid(row=0, column=1, padx=5, pady=5)
         Button(self.root, text="Ranking Vendedores", width=20).grid(row=1, column=1, padx=5, pady=5)
         self.root.mainloop()
 
