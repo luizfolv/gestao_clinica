@@ -19,7 +19,6 @@ def conectarBd():
     except:
         messagebox.showinfo("Erro","Erro ao conectar ao banco de dados.")
         
-
 class JanelaAtendente():
 
     def cadastrarCliente(self):
@@ -145,6 +144,7 @@ class JanelaLogin():
        autenticado = False
        usuarioAdmin = False
        atendente = False
+       medico = False
 
        try:
            conectarBd()
@@ -157,19 +157,25 @@ class JanelaLogin():
 
        try:
           with conexao.cursor() as cursor:
-             cursor.execute('SELECT * FROM atendente')
+             cursor.execute('SELECT nome,senha,nivel FROM diretoria UNION SELECT nome,senha,nivel FROM medicos UNION SELECT nome,senha,nivel FROM atendente')
              resultados = cursor.fetchall()
        except:
           print('Erro ao fazer a consulta')
 
        for linha in resultados:
            if usuario == linha['nome'] and senha == linha['senha']:
-               if linha['nivel'] == 1:
-                   usuarioAdmin = False
-                   atendente = True
-               elif linha['nivel'] == 2:
+               if linha['nivel'] == 0:
                    usuarioAdmin = True
                    atendente = False
+                   medico = False               
+               elif linha['nivel'] == 1:
+                   usuarioAdmin = False
+                   atendente = True
+                   medico = False
+               elif linha['nivel'] == 2:
+                   usuarioAdmin = False
+                   atendente = False
+                   medico = True
                autenticado = True
                break
            else:
@@ -184,6 +190,9 @@ class JanelaLogin():
             elif atendente:
                 self.root.destroy()
                 JanelaAtendente()
+            elif medico:
+                self.root.destroy()
+                JanelaMedico()
 
 
   def __init__(self):
@@ -516,6 +525,7 @@ class CadastroMedicos():
         end1 = self.end.get()
         email1 = self.email.get()
         tel1 = self.tel.get()
+        senha1 = self.senha.get()
         dispo1 = self.disp.get()
 
         try:
@@ -523,10 +533,9 @@ class CadastroMedicos():
         except:
             messagebox.showinfo("Erro", "Erro ao conectar ao banco de dados")
 
-
         try:
             with conexao.cursor() as cursor:
-                cursor.execute("INSERT INTO medicos VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",(crm1,cpf1,nome1,end1,email1,tel1,dispo1,1))
+                cursor.execute("INSERT INTO medicos VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)",(crm1,cpf1,nome1,end1,email1,tel1,senha1,dispo1,2))
                 conexao.commit()
                 messagebox.showinfo("Sucesso","O médico foi cadastrado com sucesso.")
                 self.root.destroy()
@@ -562,10 +571,14 @@ class CadastroMedicos():
         Label(self.root, text="Telefone ").grid(row=2, column=2, padx=5, pady=5)
         self.tel = Entry(self.root)
         self.tel.grid(row=2, column=3, padx=5, pady=5)
+        
+        Label(self.root, text="Senha ").grid(row=3, column=2, padx=5, pady=5)
+        self.senha = Entry(self.root, show = "*")
+        self.senha.grid(row=3, column=3, padx=5, pady=5)
 
-        Label(self.root, text="Disposição ").grid(row=3, column=2, padx=5, pady=5)
+        Label(self.root, text="Disposição ").grid(row=4, column=2, padx=5, pady=5)
         self.disp = Entry(self.root)
-        self.disp.grid(row=3, column=3, padx=5, pady=5)
+        self.disp.grid(row=4, column=3, padx=5, pady=5)
 
         Button(self.root,text="Cadastrar",width=20, command=self.cadastrarMedico).grid(row=5, column=2)
 
@@ -573,5 +586,16 @@ class CadastroMedicos():
 
         self.root.mainloop()
 
+class JanelaMedico():
+    def __init__(self):
+        self.root=Tk()
+        self.root.title("Médico")
+        self.root.geometry("250x250")
+        
+        Label(self.root,text="Área Médica").grid(row=0,column=0,columnspan=4)
+        
+        Button(self.root,text="Emitir Resultados",width=20).grid(row=4,column=1,padx=5,pady=5)
+                
+        self.root.mainloop()
 
 JanelaLogin()
