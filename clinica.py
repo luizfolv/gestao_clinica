@@ -3,6 +3,7 @@ import pymysql
 from tkinter import messagebox
 from tkinter import ttk
 import matplotlib.pyplot as plt
+import numpy as np
 
 def conectarBd():
     global conexao
@@ -296,19 +297,19 @@ class Relatorio():
             self.total = cursor.fetchone()
             if self.total == None:
                 break
-
-            self.lista = list(self.total)
-
-            if 'Convenio' in self.lista:
+            
+            
+            if self.total['tipo_plano'] == 'Convenio':
                 somaConvenio += 1
-            if 'Particular' in self.lista:
-                somaParticular += 1
-
-        plt.plot([somaConvenio,somaParticular])
-        plt.xlabel("Quantidade de Conveniados")
-        plt.ylabel("Quantidade de Particular")
-        plt.title("Relação entre clientes Particular e Conveniados")
+            elif self.total['tipo_plano'] == 'Particular':
+                somaParticular += 1                
+        
+        
+        grupos = ["Convenio","Particular"]
+        valores = [somaConvenio,somaParticular]
+        plt.bar(grupos,valores)
         plt.show()
+
 
     def gerarExames(self):
         try:
