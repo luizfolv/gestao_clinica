@@ -124,7 +124,7 @@ class JanelaAtendente():
 
         self.root.mainloop()
 
-class AdminJanela():
+class JanelaAdmin():
 
     def __init__(self):
         self.root = Tk()
@@ -180,7 +180,7 @@ class JanelaLogin():
        if autenticado:
             if usuarioAdmin:
                 self.root.destroy()
-                AdminJanela()
+                JanelaAdmin()
             elif atendente:
                 self.root.destroy()
                 JanelaAtendente()
@@ -234,9 +234,9 @@ class JanelaCadastro():
 
     def __init__(self):
         self.root = Tk()
-        self.root.title("Cadastro")
+        self.root.title("Cadastro de Atendente")
         #self.root.geometry("800x600")
-        Label(self.root, text="Cadastro").grid(row=0,column=0, columnspan=2)
+        Label(self.root, text="Cadastro de Atendente").grid(row=0,column=0, columnspan=4)
         Label(self.root, text="CPF").grid(row=1,column=0)
         self.cpf = Entry(self.root)
         self.cpf.grid(row=1,column=1, padx=5, pady=5)
@@ -307,6 +307,9 @@ class Relatorio():
         
         grupos = ["Convenio","Particular"]
         valores = [somaConvenio,somaParticular]
+        plt.title("Relação Convênio x Particular")
+        plt.ylabel("Quantidade de cliente por pagamento")
+        plt.xlabel("Tipos de Pagamentos")
         plt.bar(grupos,valores)
         plt.show()
 
@@ -356,6 +359,7 @@ class Relatorio():
         #aplicando explosion e cores
         plt.pie(sizes, explode=explode, labels=labels, colors=cores, autopct=lambda p: '{:.0f}'.format(p * total / 100), shadow=True, startangle=90) 
         plt.axis('equal')
+        plt.title("Quantidade de exames por tipo")
         
         #mostrando grafico
         plt.show()
@@ -392,7 +396,50 @@ class Relatorio():
         valores = [self.Homem,self.Mulher,self.total]
         plt.bar(grupos,valores)
         plt.title("Associação por sexo")
-        plt.show()        
+        plt.xlabel("Gênero")
+        plt.ylabel("Quantidade por sexo")
+        plt.show() 
+        
+    def gerarVendas(self):
+        try:
+            conectarBd()
+        except:
+            messagebox.showinfo("Erro","Não foi possível conectar ao banco de dados.")
+        
+        try:
+            with conexao.cursor() as cursor:
+                self.TVendas = cursor.execute("SELECT * FROM vendedores")
+        except:
+            messagebox.showinfo("Erro","Não foi possível coletar os dados.")
+            
+        
+        self.MVendas = 0 #MAIOR VENDA
+        self.MVendedor = {} #MAIOR VENDEDOR
+        self.NVendas = 99 #MENOR VENDA
+        self.Teste = []
+        self.NVendedor = {} #MENOR VENDEDOR       
+        
+        while True:
+            self.vendas = cursor.fetchone()
+            
+            if self.vendas == None:
+                break
+            
+            
+            
+            if self.vendas['vendas'] > self.MVendas:
+                self.MVendas = self.vendas['vendas']
+                self.MVendedor.update({self.vendas['nome']: self.MVendas})
+            
+                
+            
+        
+        plt.bar(*zip(*self.MVendedor.items()))
+        plt.title("Maiores Vendedores")
+        plt.xlabel("Nome do Vendedores")
+        plt.ylabel("Quantidade Vendida")
+        plt.show()                        
+                          
         
 
     def __init__(self):
@@ -402,7 +449,7 @@ class Relatorio():
         Button(self.root, text="Pagamentos",width=20,command=self.gerarPagamentos).grid(row=0,column=0, padx=5,pady=5)
         Button(self.root, text="Exames", width=20, command=self.gerarExames).grid(row=1,column=0, padx=5, pady=5)
         Button(self.root, text="Associação", width=20, command=self.gerarAssociacoes).grid(row=0, column=1, padx=5, pady=5)
-        Button(self.root, text="Ranking Vendedores", width=20).grid(row=1, column=1, padx=5, pady=5)
+        Button(self.root, text="Ranking Vendedores", width=20, command=self.gerarVendas).grid(row=1, column=1, padx=5, pady=5)
         self.root.mainloop()
 
 class CadastroVendedor():
@@ -433,7 +480,7 @@ class CadastroVendedor():
         self.root = Tk()
         self.root.title("Cadastro de Vendedores")
         #self.root.geometry("800x600")
-        Label(self.root,text="Cadastro de Vendedores").grid(row=0,column=0,columnspan=2)
+        Label(self.root,text="Cadastro de Vendedores").grid(row=0,column=0,columnspan=4)
         Label(self.root,text="CPF ").grid(row=1,column=0, padx=5,pady=5)
         self.cpf = Entry(self.root)
         self.cpf.grid(row=1,column=1,padx=5,pady=5)
@@ -491,7 +538,7 @@ class CadastroMedicos():
         self.root.title("Cadastrar Médico")
         #self.root.geometry("800x600")
 
-        Label(self.root,text="Cadastro Médico").grid(row=0,column=0,columnspan=2)
+        Label(self.root,text="Cadastro Médico").grid(row=0,column=0,columnspan=4)
         Label(self.root,text="CRM ").grid(row=1,column=0,padx=5,pady=5)
         self.crm = Entry(self.root)
         self.crm.grid(row=1,column=1,padx=5,pady=5)
@@ -527,4 +574,4 @@ class CadastroMedicos():
         self.root.mainloop()
 
 
-Relatorio()
+JanelaLogin()
