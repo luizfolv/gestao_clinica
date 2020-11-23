@@ -198,6 +198,8 @@ class JanelaLogin():
   def __init__(self):
       self.root = Tk()
       self.root.title("Clinica de Exames")
+      self.root.geometry("400x200")
+
       Label(self.root, text="Login").grid(row=0,column=0, columnspan=2)
 
       Label(self.root, text="Usuário").grid(row=1,column=0)
@@ -585,17 +587,34 @@ class CadastroMedicos():
 
 
         self.root.mainloop()
-
+  
 class JanelaMedico():
+    
+    def fazerLogoff(self):
+        self.app.destroy()
+        JanelaLogin()
+    
+    def enviarExame(self):
+        messagebox.showinfo("Sucesso!","Mensagem enviada com sucesso!")
+    
     def __init__(self):
-        self.root=Tk()
-        self.root.title("Médico")
-        self.root.geometry("250x250")
-        
-        Label(self.root,text="Área Médica").grid(row=0,column=0,columnspan=4)
-        
-        Button(self.root,text="Emitir Resultados",width=20).grid(row=4,column=1,padx=5,pady=5)
+        self.app = Tk()
+        self.app.title("Área Médica")
+        self.app.geometry("400x200")
                 
-        self.root.mainloop()
+        Label(self.app,text="Área Médica").grid(row=0,column=0,columnspan=4,padx=5,pady=5)
+        Label(self.app,text="CPF do Paciente").grid(row=1,column=0,padx=5,pady=5)
+        Entry(self.app).grid(row=1,column=1,padx=5,pady=5)
+        Label(self.app,text="Nome do Paciente ").grid(row=2,column=0,padx=5,pady=5)
+        Entry(self.app).grid(row=2,column=1,padx=5,pady=5)
+        Label(self.app,text="ID Exame ").grid(row=3,column=0,padx=5,pady=5)
+        Entry(self.app).grid(row=3,column=1,padx=5,pady=5)
+        
+        Button(self.app,text="Enviar Relatório",width=20,command=self.enviarExame).grid(row=4,column=1,padx=5,pady=5)
+        
+        Button(self.app,text="Sair",width=15,command=self.fazerLogoff).grid(row=0,column=4,padx=5,pady=5)
+        
+        
+        self.app.mainloop()
 
 JanelaLogin()
