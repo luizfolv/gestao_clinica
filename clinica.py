@@ -1,5 +1,6 @@
 from tkinter import *
 import pymysql
+import sys
 from tkinter import messagebox
 from tkinter import ttk
 import matplotlib.pyplot as plt
@@ -20,8 +21,20 @@ def conectarBd():
         messagebox.showinfo("Erro","Erro ao conectar ao banco de dados.")
         
 class JanelaAtendente():
-
+    
+    def fazerLogoff(self):
+        self.root.destroy()
+        JanelaLogin()
+    
     def cadastrarCliente(self):
+        
+        if self.cpf.get() == "":
+            messagebox.showerror("Erro","Por favor, preencha todos os dados.")
+            self.root.destroy()
+            JanelaAtendente()
+            sys.exit()
+
+        
         try:
             conectarBd()
         except:
@@ -79,6 +92,7 @@ class JanelaAtendente():
         
         Label(self.root, text="Cadastro de Clientes").grid(row=0,column=0,columnspan=4)
 
+        Button(self.root,text="Sair",width=15,command=self.fazerLogoff).grid(row=0,column=4,padx=5,pady=5)
         
         Label(self.root, text="CPF ").grid(row=1,column=0)
         self.cpf=Entry(self.root)
@@ -126,17 +140,21 @@ class JanelaAtendente():
         self.root.mainloop()
 
 class JanelaAdmin():
+    
+    def fazerLogoff(self):
+        self.root.destroy()
+        JanelaLogin()
 
     def __init__(self):
         self.root = Tk()
         self.root.title("Plataforma ADMIN")
         #self.root.geometry("500x500")
-        Button(self.root,text="Cadastrar Atendente", width=20, command=JanelaCadastro).grid(row=0,column=0,padx=5,pady=5)
-        Button(self.root,text="Cadastrar Vendedores", width=20, command=CadastroVendedor).grid(row=1,column=0,padx=5,pady=5)
-        Button(self.root,text="Cadastrar Médicos", width=20,command=CadastroMedicos).grid(row=0,column=1,padx=5,pady=5)
-        Button(self.root, text="Consultar Informações", width=20, command=Relatorio).grid(row=1, column=1, padx=5,pady=5)
+        Button(self.root,text="Cadastrar Atendente", width=20, command=JanelaCadastro).grid(row=1,column=0,padx=5,pady=5)
+        Button(self.root,text="Cadastrar Vendedores", width=20, command=CadastroVendedor).grid(row=2,column=0,padx=5,pady=5)
+        Button(self.root,text="Cadastrar Médicos", width=20,command=CadastroMedicos).grid(row=1,column=1,padx=5,pady=5)
+        Button(self.root, text="Consultar Informações", width=20, command=Relatorio).grid(row=2, column=1, padx=5,pady=5)
 
-
+        Button(self.root,text="Sair",width=15,command=self.fazerLogoff).grid(row=0,column=4,padx=5,pady=5)
 
         self.root.mainloop()
 
@@ -229,6 +247,13 @@ class JanelaLogin():
 class JanelaCadastro():
 
     def enviarCadastro(self):
+        
+        if self.cpf.get() == "":
+            messagebox.showerror("Erro","Por favor, preencha todos os dados.")
+            self.root.destroy()
+            JanelaCadastro()
+            sys.exit()
+        
         cpf1 = self.cpf.get()
         nome1 = self.nome.get()
         end1 = self.end.get()
@@ -474,6 +499,12 @@ class Relatorio():
 
 class CadastroVendedor():
     def enviarCadastro(self):
+        if self.cpf.get() == "":
+            messagebox.showerror("Erro","Por favor, preencha todos os dados.")
+            self.root.destroy()
+            JanelaCadastro()
+            sys.exit()
+        
         cpf1 = self.cpf.get()
         nome1 = self.nome.get()
         end1 = self.end.get()
@@ -530,6 +561,13 @@ class CadastroVendedor():
 class CadastroMedicos():
 
     def cadastrarMedico(self):
+        
+        if self.crm.get() == "":
+            messagebox.showerror("Erro","Por favor, preencha todos os dados.")
+            self.root.destroy()
+            CadastroMedicos()
+            sys.exit()
+        
         crm1 = self.crm.get()
         cpf1 = self.cpf.get()
         nome1 = self.nome.get()
@@ -626,4 +664,4 @@ class JanelaMedico():
         
         self.app.mainloop()
 
-JanelaLogin()
+JanelaAtendente()
