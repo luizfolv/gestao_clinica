@@ -76,8 +76,10 @@ class JanelaAtendente():
     def __init__(self):
         self.root=Tk()
         self.root.title("Atendente")
+        
         Label(self.root, text="Cadastro de Clientes").grid(row=0,column=0,columnspan=4)
 
+        
         Label(self.root, text="CPF ").grid(row=1,column=0)
         self.cpf=Entry(self.root)
         self.cpf.grid(row=1,column=1,padx=5,pady=5)
@@ -120,7 +122,7 @@ class JanelaAtendente():
 
         Button(self.root,text="Cadastrar", width=20, command=self.cadastrarCliente).grid(row=7,column=1, padx=5,pady=5)
         Button(self.root,text="Exames", width=20, command=self.marcarExames).grid(row=7,column=2,padx=5,pady=5)
-
+        
         self.root.mainloop()
 
 class JanelaAdmin():
@@ -141,81 +143,88 @@ class JanelaAdmin():
 class JanelaLogin():
 
   def verificaLogin(self):
-       autenticado = False
-       usuarioAdmin = False
-       atendente = False
-       medico = False
+      
+          
+      if self.login.get() == "" or self.senha.get() == "":
+              messagebox.showerror("Erro","Por favor, preencha todos os dados.")
+              self.app.destroy()
+              JanelaLogin()
+              
+      autenticado = False
+       
+      usuarioAdmin = False
+      atendente = False
+      medico = False
 
-       try:
-           conectarBd()
-           messagebox.showinfo("Sucesso","Conectado com sucesso!")
-       except:
-           messagebox.showinfo("Erro","Erro ao conectar ao banco de dados")
+      try:
+          conectarBd()
+      except:
+          messagebox.showinfo("Erro","Erro ao conectar ao banco de dados")
 
-       usuario = self.login.get()
-       senha = self.senha.get()
+      usuario = self.login.get()
+      senha = self.senha.get()
 
-       try:
-          with conexao.cursor() as cursor:
-             cursor.execute('SELECT nome,senha,nivel FROM diretoria UNION SELECT nome,senha,nivel FROM medicos UNION SELECT nome,senha,nivel FROM atendente')
-             resultados = cursor.fetchall()
-       except:
-          print('Erro ao fazer a consulta')
+      try:
+         with conexao.cursor() as cursor:
+            cursor.execute('SELECT nome,senha,nivel FROM diretoria UNION SELECT nome,senha,nivel FROM medicos UNION SELECT nome,senha,nivel FROM atendente')
+            resultados = cursor.fetchall()
+      except:
+         print('Erro ao fazer a consulta')
 
-       for linha in resultados:
-           if usuario == linha['nome'] and senha == linha['senha']:
-               if linha['nivel'] == 0:
-                   usuarioAdmin = True
-                   atendente = False
-                   medico = False               
-               elif linha['nivel'] == 1:
-                   usuarioAdmin = False
-                   atendente = True
-                   medico = False
-               elif linha['nivel'] == 2:
-                   usuarioAdmin = False
-                   atendente = False
-                   medico = True
-               autenticado = True
-               break
-           else:
-               autenticado = False
-       if not autenticado:
-           messagebox.showinfo("Erro","Login ou senha invalidos")
+      for linha in resultados:
+          if usuario == linha['nome'] and senha == linha['senha']:
+              if linha['nivel'] == 0:
+                  usuarioAdmin = True
+                  atendente = False
+                  medico = False               
+              elif linha['nivel'] == 1:
+                  usuarioAdmin = False
+                  atendente = True
+                  medico = False
+              elif linha['nivel'] == 2:
+                  usuarioAdmin = False
+                  atendente = False
+                  medico = True
+              autenticado = True
+              break
+          else:
+              autenticado = False
+      if not autenticado:
+          messagebox.showinfo("Erro","Login ou senha invalidos")
 
-       if autenticado:
-            if usuarioAdmin:
-                self.root.destroy()
-                JanelaAdmin()
-            elif atendente:
-                self.root.destroy()
-                JanelaAtendente()
-            elif medico:
-                self.root.destroy()
-                JanelaMedico()
+      if autenticado:
+           if usuarioAdmin:
+               self.app.destroy()
+               JanelaAdmin()
+           elif atendente:
+               self.app.destroy()
+               JanelaAtendente()
+           elif medico:
+               self.app.destroy()
+               JanelaMedico()
 
 
   def __init__(self):
-      self.root = Tk()
-      self.root.title("Clinica de Exames")
-      self.root.geometry("400x200")
-
-      Label(self.root, text="Login").grid(row=0,column=0, columnspan=2)
-
-      Label(self.root, text="Usuário").grid(row=1,column=0)
-
-      self.login = Entry(self.root)
-      self.login.grid(row=1,column=1, padx=5,pady=5)
-
-      Label(self.root, text="Senha").grid(row=2, column=0)
-
-      self.senha = Entry(self.root, show="*")
-      self.senha.grid(row=2, column=1,padx=5,pady=5)
-
-      Button(self.root, text="Entrar", command=self.verificaLogin,width=10).grid(row=3,column=1, padx=5,pady=5)
-
-
-      self.root.mainloop()
+      self.app = Tk()
+      self.app.title("Clinica de Exames")
+      self.app.geometry("250x200")
+      
+      Label(self.app,text="Logue-se").pack()
+      Label(self.app,text="",wraplength=2).pack()
+      
+      
+      Label(self.app,text="Usuário ").pack()
+      self.login = Entry(self.app)
+      self.login.pack()
+      Label(self.app,text="Senha ").pack()
+      self.senha = Entry(self.app, show="*")
+      self.senha.pack()
+      Label(self.app,text="",wraplength=2).pack()
+      
+      Button(self.app, text="Entrar",width=10,command=self.verificaLogin).pack()
+      
+      
+      self.app.mainloop()
 
 class JanelaCadastro():
 
