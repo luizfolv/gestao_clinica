@@ -11,8 +11,8 @@ def conectarBd():
     try:
         conexao = pymysql.connect(
                 host='127.0.0.1',
-                user='root', #felipeolv
-                password='', #5924259242
+                user='root',
+                password='',
                 db='clinica_gestao',
                 charset='utf8mb4',
                 cursorclass=pymysql.cursors.DictCursor
